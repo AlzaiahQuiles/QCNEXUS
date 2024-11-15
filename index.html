@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+        <style>
+
+            * {
+
+                margin: 0;
+
+                padding: 0;
+
+                box-sizing: border-box;
+
+            }
+
+            body {
+
+                font-family: 'Poppins', sans-serif;
+
+                background: #f0f2f5;
+
+                color: #2d3436;
+
+                min-height: 100vh;
+
+                padding: 20px;
+
+            }
+
+            .game-container {
+
+                max-width: 1200px;
+
+                margin: 0 auto;
+
+                background: white;
+
+                padding: 30px;
+
+                border-radius: 20px;
+
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+            }
+
+            .game-header {
+
+                text-align: center;
+
+                margin-bottom: 30px;
+
+                padding: 20px;
+
+                background: #037712;
+
+                border-radius: 15px;
+
+                color: white;
+
+            }
+
+            .game-header h1 {
+
+                margin: 0;
+
+                font-size: 2.5em;
+
+                font-weight: 700;
+
+                letter-spacing: -0.5px;
+
+            }
+
+            .game-header p {
+
+                margin: 10px 0 0;
+
+                font-size: 1.2em;
+
+                opacity: 0.9;
+
+            }
+
+            .stats-container {
+
+                display: grid;
+
+                grid-template-columns: repeat(3, 1fr);
+
+                gap: 20px;
+
+                margin-bottom: 30px;
+
+            }
+
+            .stat-box {
+
+                background: #f8f9fa;
+
+                padding: 20px;
+
+                border-radius: 15px;
+
+                text-align: center;
+
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+                transition: transform 0.2s ease;
+
+            }
+
+            .stat-box:hover {
+
+                transform: translateY(-2px);
+
+            }
+
+            .stat-label {
+
+                font-size: 1.1em;
+
+                color: #636e72;
+
+                margin-bottom: 5px;
+
+                font-weight: 600;
+
+            }
+
+            .stat-value {
+
+                font-size: 1.8em;
+
+                font-weight: 700;
+
+                color: #037712;
+
+            }
+
+            .timer-container {
+
+                margin-bottom: 30px;
+
+            }
+
+            .timer-bar {
+
+                height: 15px;
+
+                background: #e9ecef;
+
+                border-radius: 10px;
+
+                overflow: hidden;
+
+            }
+
+            .timer-progress {
+
+                height: 100%;
+
+                width: 100%;
+
+                background: linear-gradient(90deg, #037712, #00b894);
+
+                transition: width 0.1s linear;
+
+            }
+
+            .item-display {
+
+                text-align: center;
+
+                margin: 30px 0;
+
+                padding: 30px;
+
+                background: #f8f9fa;
+
+                border-radius: 15px;
+
+                font-size: 1.4em;
+
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+            }
+
+            .item-image {
+
+                width: 120px;
+
+                height: 120px;
+
+                margin: 0 auto 20px;
+
+                display: flex;
+
+                align-items: center;
+
+                justify-content: center;
+
+                font-size: 80px;
+
+                background: white;
+
+                border-radius: 50%;
+
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+            }
+
+            .storage-grid {
+
+                display: grid;
+
+                grid-template-columns: repeat(2, 1fr);
+
+                gap: 20px;
+
+                margin-bottom: 30px;
+
+            }
+
+            .storage-button {
+
+                padding: 30px;
+
+                border: none;
+
+                border-radius: 15px;
+
+                cursor: pointer;
+
+                font-size: 1.2em;
+
+                font-weight: 600;
+
+                color: white;
+
+                transition: all 0.3s ease;
+
+                display: flex;
+
+                align-items: center;
+
+                justify-content: center;
+
+                gap: 10px;
+
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+            }
+
+            .storage-button:hover {
+
+                transform: translateY(-3px);
+
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+            }
+
+            .storage-button:active {
+
+                transform: translateY(-1px);
+
+            }
+
+            .cooler {
+
+                background: linear-gradient(135deg, #0984e3, #74b9ff);
+
+            }
+
+            .ambient {
+
+                background: linear-gradient(135deg, #fdcb6e, #ffeaa7);
+
+                color: #2d3436;
+
+                text-shadow: none;
+
+            }
+
+            .freezer {
+
+                background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+
+            }
+
+            .onion-room {
+
+                background: linear-gradient(135deg, #e84393, #fd79a8);
+
+            }
+
+            .feedback {
+
+                position: fixed;
+
+                top: 50%;
+
+                left: 50%;
+
+                transform: translate(-50%, -50%);
+
+                padding: 20px 40px;
+
+                border-radius: 15px;
+
+                font-size: 1.4em;
+
+                font-weight: 600;
+
+                display: none;
+
+                z-index: 1000;
+
+                animation: fadeIn 0.3s ease;
+
+            }
+
+            @keyframes fadeIn {
+
+                from { opacity: 0; transform: translate(-50%, -60%); }
+
+                to { opacity: 1; transform: translate(-50%, -50%); }
+
+            }
+
+            .correct {
+
+                background: #00b894;
+
+                color: white;
+
+            }
+
+            .incorrect {
+
+                background: #d63031;
+
+                color: white;
+
+            }
+
+            .game-over-overlay {
+
+                position: fixed;
+
+                top: 0;
+
+                left: 0;
+
+                right: 0;
+
+                bottom: 0;
+
+                background: rgba(0, 0, 0, 0.9);
+
+                display: none;
+
+                justify-content: center;
+
+                align-items: center;
+
+                z-index: 2000;
+
+            }
+
+            .game-over-content {
+
+                background: white;
+
+                padding: 40px;
+
+                border-radius: 20px;
+
+                text-align: center;
+
+                animation: slideIn 0.5s ease;
+
+                max-width: 500px;
+
+                width: 90%;
+
+            }
+
+            @keyframes slideIn {
+
+                from { transform: translateY(-100px); opacity: 0; }
+
+                to { transform: translateY(0); opacity: 1; }
+
+            }
+
+            .game-over-content h2 {
+
+                color: #037712;
+
+                font-size: 2.5em;
+
+                margin-bottom: 20px;
+
+            }
+
+            .game-over-content .final-score {
+
+                font-size: 1.8em;
+
+                margin-bottom: 30px;
+
+                color: #2d3436;
+
+            }
+
+            .restart-button {
+
+                background: #037712;
+
+                color: white;
+
+                border: none;
+
+                padding: 15px 30px;
+
+                font-size: 1.2em;
+
+                border-radius: 10px;
+
+                cursor: pointer;
+
+                transition: all 0.3s ease;
+
+                font-weight: 600;
+
+            }
+
+            .restart-button:hover {
+
+                transform: scale(1.05);
+
+                background: #025d0e;
+
+            }
+
+        </style>
+
+</head>
+<body>
+
+        <div class="game-container">
+
+            <div class="game-header">
+
+                <h1>Storage Location Training</h1>
+
+                <p>Master proper ingredient storage for food safety!</p>
+
+            </div>
+
+            <div class="stats-container">
+
+                <div class="stat-box">
+
+                    <div class="stat-label">Current Score</div>
+
+                    <div class="stat-value" id="score">0</div>
+
+                </div>
+
+                <div class="stat-box">
+
+                    <div class="stat-label">Time Remaining</div>
+
+                    <div class="stat-value" id="timeLeft">30</div>
+
+                </div>
+
+                <div class="stat-box">
+
+                    <div class="stat-label">Questions</div>
+
+                    <div class="stat-value" id="progress">0/60</div>
+
+                </div>
+
+            </div>
+
+            <div class="timer-container">
+
+                <div class="timer-bar">
+
+                    <div class="timer-progress" id="timerBar"></div>
+
+                </div>
+
+            </div>
+
+            <div class="item-display">
+
+                <div class="item-image" id="itemImage"></div>
+
+                <div id="currentItem">Loading...</div>
+
+            </div>
+
+            <div class="storage-grid">
+
+                <button class="storage-button cooler" onclick="checkAnswer('Cooler Storage')">
+
+                    🌡️ Cooler Storage
+
+                </button>
+
+                <button class="storage-button ambient" onclick="checkAnswer('Ambient Storage')">
+
+                    🏠 Ambient Storage
+
+                </button>
+
+                <button class="storage-button freezer" onclick="checkAnswer('Freezer Storage')">
+
+                    ❄️ Freezer Storage
+
+                </button>
+
+                <button class="storage-button onion-room" onclick="checkAnswer('Onion Room Storage')">
+
+                    🧅 Onion Room Storage
+
+                </button>
+
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+
+        </div>
+
+        <div class="game-over-overlay" id="gameOverOverlay">
+
+            <div class="game-over-content">
+
+                <h2>Game Over!</h2>
+
+                <div class="final-score" id="finalScore">Final Score: 0</div>
+
+                <button class="restart-button" onclick="restartGame()">Try Again</button>
+
+            </div>
+
+        </div>
+
+<script>
+
+// Complete database of 60 items
+
+const items = [
+
+        // Cooler Storage Items
+
+        { name: "Cheese, Shredded Cheddar - 2 Ounce (oz)", location: "Cooler Storage", image: "🧀" },
+
+        { name: "Cheese, Cream - 1 Ounce (oz)", location: "Cooler Storage", image: "🧀" },
+
+        { name: "Cheese, Feta - 2 Ounce (oz)", location: "Cooler Storage", image: "🧀" },
+
+        { name: "Cheese, Fresh Mozzarella - 4 Ounce (oz)", location: "Cooler Storage", image: "🧀" },
+
+        { name: "Cheese, Ricotta - 4 Ounce (oz)", location: "Cooler Storage", image: "🧀" },
+
+        { name: "Sour Cream - 23 Gram (g)", location: "Cooler Storage", image: "🥛" },
+
+        { name: "Yogurt, Low-Fat - 1 Ounce (oz)", location: "Cooler Storage", image: "🥛" },
+
+        { name: "Broccoli, Crown - 1 Unit", location: "Cooler Storage", image: "🥦" },
+
+        { name: "Lettuce, Arugula - 2 Ounce (oz)", location: "Cooler Storage", image: "🥬" },
+
+        { name: "Spinach, Baby - 2.5 Ounce (oz)", location: "Cooler Storage", image: "🥬" },
+
+        { name: "Celery Sticks - 2.5 Ounce (oz)", location: "Cooler Storage", image: "🥬" },
+
+        { name: "Chives - 0.25 Ounce (oz)", location: "Cooler Storage", image: "🌿" },
+
+        { name: "Cilantro - 0.25 Ounce (oz)", location: "Cooler Storage", image: "🌿" },
+
+        { name: "Dill - 0.25 Ounce (oz)", location: "Cooler Storage", image: "🌿" },
+
+        { name: "Parsley - 0.25 Ounce (oz)", location: "Cooler Storage", image: "🌿" },
+
+        // Freezer Storage Items
+
+        { name: "Chicken, Cutlets - 10 Ounce (oz)", location: "Freezer Storage", image: "🍗" },
+
+        { name: "Turkey, Ground - 10 Ounce (oz)", location: "Freezer Storage", image: "🦃" },
+
+        { name: "Pork, Ground - 10 Ounce (oz)", location: "Freezer Storage", image: "🥩" },
+
+        { name: "Salmon, Skin-On - 10 Ounce (oz)", location: "Freezer Storage", image: "🐟" },
+
+        { name: "Shrimp - 10 Ounce (oz)", location: "Freezer Storage", image: "🦐" },
+
+        { name: "Chicken, Breast Chopped - 10 Ounce (oz)", location: "Freezer Storage", image: "🍗" },
+
+        { name: "Beef, Ground, 80/20 - 10 Ounce (oz)", location: "Freezer Storage", image: "🥩" },
+
+        { name: "Pork, Boneless Chops - 10 Ounce (oz)", location: "Freezer Storage", image: "🥩" },
+
+        { name: "Turkey, Breast Cutlet - 10 Ounce (oz)", location: "Freezer Storage", image: "🦃" },
+
+        { name: "Tilapia - 11 Ounce (oz)", location: "Freezer Storage", image: "🐟" },
+
+        { name: "Peas, Fresh and Frozen - 4 Ounce (oz)", location: "Freezer Storage", image: "🫛" },
+
+        { name: "Snow Peas - 4 Ounce (oz)", location: "Freezer Storage", image: "🫛" },
+
+        { name: "Cauliflower, Rice, IQF - 6 Ounce (oz)", location: "Freezer Storage", image: "🥦" },
+
+        { name: "Falafel - 10 Piece (pc)", location: "Freezer Storage", image: "🧆" },
+
+        { name: "Mac & Cheese, White Cheddar - 30 Ounce (oz)", location: "Freezer Storage", image: "🧀" },
+
+          // Ambient Storage Items
+
+        { name: "Rice, Brown, Parboiled - 1.25 Cup (c)", location: "Ambient Storage", image: "🍚" },
+
+        { name: "Rice, Arborio - 0.75 Cup (c)", location: "Ambient Storage", image: "🍚" },
+
+        { name: "Rice, Basmati - 0.5 Cup (c)", location: "Ambient Storage", image: "🍚" },
+
+        { name: "Rice, Jasmine - 0.5 Cup (c)", location: "Ambient Storage", image: "🍚" },
+
+        { name: "Sugar, Brown - 1 Tablespoon (TBSP)", location: "Ambient Storage", image: "🧂" },
+
+        { name: "Corn Kernels - 1 Unit", location: "Ambient Storage", image: "🌽" },
+
+        { name: "Sunflower Seeds - 0.5 Ounce (oz)", location: "Ambient Storage", image: "🌻" },
+
+        { name: "Cranberries, Dried - 1 Ounce (oz)", location: "Ambient Storage", image: "🫐" },
+
+        { name: "Oats, Rolled - 0.5 Cup (c)", location: "Ambient Storage", image: "🥣" },
+
+        { name: "Pasta, Penne - 6 Ounce (oz)", location: "Ambient Storage", image: "🍝" },
+
+        { name: "Hot Sauce - 1 Teaspoon (tsp)", location: "Ambient Storage", image: "🌶️" },
+
+        { name: "Maple Syrup - 1 Ounce (oz)", location: "Ambient Storage", image: "🍁" },
+
+        { name: "Stock Concentrate, Chicken - 9.6 Gram (g)", location: "Ambient Storage", image: "🥘" },
+
+        { name: "Vinegar, Balsamic - 25 Milliliter (ml)", location: "Ambient Storage", image: "🍶" },
+
+        { name: "Soy Sauce - 1 Fluid Ounce (fl oz)", location: "Ambient Storage", image: "🥢" },
+
+        // Onion Room Storage Items
+
+        { name: "Bell Pepper, Green - 1 Piece (pc)", location: "Onion Room Storage", image: "🫑" },
+
+        { name: "Cucumber, Super Select - 1 Piece (pc)", location: "Onion Room Storage", image: "🥒" },
+
+        { name: "Onion, Red - 1 Piece (pc)", location: "Onion Room Storage", image: "🧅" },
+
+        { name: "Onion, Yellow - 1 Piece (pc)", location: "Onion Room Storage", image: "🧅" },
+
+        { name: "Potato, Russet B - 12 Ounce (oz)", location: "Onion Room Storage", image: "🥔" },
+
+        { name: "Potato, Russet B - 16 Ounce (oz)", location: "Onion Room Storage", image: "🥔" },
+
+        { name: "Pepper, Jalapeno - 1 Piece (pc)", location: "Onion Room Storage", image: "🌶️" },
+
+        { name: "Shallot - 2 Ounce (oz)", location: "Onion Room Storage", image: "🧅" },
+
+        { name: "Squash, Zucchini - 1 Piece (pc)", location: "Onion Room Storage", image: "🥒" },
+
+        { name: "Tomato, Grape - 4 Ounce (oz)", location: "Onion Room Storage", image: "🍅" },
+
+        { name: "Tomato, Roma - 1 Piece (pc)", location: "Onion Room Storage", image: "🍅" },
+
+        { name: "Bell Pepper, Red/Orange/Yellow - 1 Piece (pc)", location: "Onion Room Storage", image: "🫑" },
+
+        { name: "Potato, Sweet - 6 Ounce (oz)", location: "Onion Room Storage", image: "🥔" },
+
+        { name: "Garlic, Unpeeled - 1 Clove", location: "Onion Room Storage", image: "🧄" },
+
+        { name: "Lemon - 1 Piece (pc)", location: "Onion Room Storage", image: "🍋" }
+
+];
+
+// Game state variables
+
+let currentItemIndex = 0;
+
+let score = 0;
+
+let timeLeft = 30;
+
+let timer;
+
+let gameActive = false;
+
+// Core game functions
+
+function updateStats() {
+
+        document.getElementById('score').textContent = score;
+
+        document.getElementById('timeLeft').textContent = timeLeft;
+
+        document.getElementById('progress').textContent = `${currentItemIndex + 1}/${items.length}`;
+
+        document.getElementById('timerBar').style.width = `${(timeLeft/30)*100}%`;
+
+}
+
+function shuffleArray(array) {
+
+        for (let i = array.length - 1; i > 0; i--) {
+
+            const j = Math.floor(Math.random() * (i + 1));
+
+            [array[i], array[j]] = [array[j], array[i]];
+
+        }
+
+        return array;
+
+}
+
+function showGameOver() {
+
+        clearInterval(timer);
+
+        gameActive = false;
+
+        document.getElementById('gameOverOverlay').style.display = 'flex';
+
+        document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+
+}
+
+function restartGame() {
+
+        document.getElementById('gameOverOverlay').style.display = 'none';
+
+        score = 0;
+
+        currentItemIndex = 0;
+
+        timeLeft = 30;
+
+        gameActive = true;
+
+        shuffleArray(items); // Randomize questions each game
+
+        updateStats();
+
+        loadNewItem();
+
+        startTimer();
+
+}
+
+function loadNewItem() {
+
+        if (currentItemIndex >= items.length) {
+
+            showGameOver();
+
+            return;
+
+        }
+
+   
+
+        const currentItem = items[currentItemIndex];
+
+        document.getElementById('currentItem').textContent = currentItem.name;
+
+        document.getElementById('itemImage').textContent = currentItem.image;
+
+        document.getElementById('itemImage').style.fontSize = '80px';
+
+   
+
+        timeLeft = 30;
+
+        updateStats();
+
+}
+
+function checkAnswer(selectedLocation) {
+
+        if (!gameActive) return;
+
+   
+
+        const correctLocation = items[currentItemIndex].location;
+
+        const feedback = document.getElementById('feedback');
+
+   
+
+        if (selectedLocation === correctLocation) {
+
+            score += 100;
+
+            feedback.textContent = "✅ Correct Storage Location!";
+
+            feedback.className = "feedback correct";
+
+        } else {
+
+            feedback.textContent = `❌ This goes in ${correctLocation}`;
+
+            feedback.className = "feedback incorrect";
+
+            timeLeft = Math.max(0, timeLeft - 5); // Penalty for wrong answer
+
+            if (timeLeft === 0) {
+
+                showGameOver();
+
+                return;
+
+            }
+
+        }
+
+   
+
+        feedback.style.display = 'block';
+
+        updateStats();
+
+   
+
+        setTimeout(() => {
+
+            feedback.style.display = 'none';
+
+            currentItemIndex++;
+
+            if (currentItemIndex >= items.length) {
+
+                showGameOver();
+
+            } else {
+
+                loadNewItem();
+
+            }
+
+        }, 1500);
+
+}
+
+function startTimer() {
+
+        clearInterval(timer);
+
+        timer = setInterval(() => {
+
+            if (!gameActive) return;
+
+           
+
+            timeLeft--;
+
+            updateStats();
+
+           
+
+            if (timeLeft <= 10) {
+
+                document.getElementById('timerBar').style.background =
+
+                    `linear-gradient(90deg, #d63031, #ff7675)`;
+
+            }
+
+           
+
+            if (timeLeft <= 0) {
+
+                showGameOver();
+
+            }
+
+        }, 1000);
+
+}
+
+// Keyboard controls
+
+document.addEventListener('keydown', (e) => {
+
+        if (!gameActive) return;
+
+   
+
+        switch(e.key) {
+
+            case '1':
+
+                checkAnswer('Cooler Storage');
+
+                break;
+
+            case '2':
+
+                checkAnswer('Ambient Storage');
+
+                break;
+
+            case '3':
+
+                checkAnswer('Freezer Storage');
+
+                break;
+
+            case '4':
+
+                checkAnswer('Onion Room Storage');
+
+                break;
+
+        }
+
+});
+
+// Start the game when the page loads
+
+window.onload = restartGame;
